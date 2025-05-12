@@ -1,0 +1,25 @@
+@startuml ArchitectureDiagram
+
+  left to right direction
+
+  actor User
+  actor Admin
+
+  rectangle "DailyTrends ENV" {
+    component "API DailyTrends" as API
+    component "News Scraper" as Scraper
+    database "MongoDB" as DB
+  }
+  rectangle "External Sources (Internet)" {
+    node "El País Website" as ElPaisWS
+    node "El Mundo Website" as ElMundoWS
+  }
+  
+  User --> API : HTTP Requests
+  Admin --> Scraper : Trigger execution (CLI)
+  API <--> DB : CRUD Ops (Feeds)
+  Scraper --> DB : Create Feeds 
+  Scraper --> ElPaisWS : Extract News (HTTP GET)
+  Scraper --> ElMundoWS : Extract News (HTTP GET)
+
+@enduml

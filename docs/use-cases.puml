@@ -1,0 +1,37 @@
+@startuml DailyTrendsUseCases
+
+  left to right direction
+
+  actor User
+  actor Admin
+
+  rectangle "DailyTrends" {
+    
+    Admin -- (Scrape News Headlines)
+    note right of (Scrape News Headlines)
+      Extracts headlines (5) from
+      "El País" and "El Mundo"
+      and saves them.
+    end note
+    
+    User -- (View Daily Feeds)
+    note right of (View Daily Feeds)
+      Displays the top 5 headlines
+      from 'El País' and 'El Mundo'
+      for the current day.
+    end note
+    
+    package "Feed Management (CRUD)" {
+      User -- (Create Manual Feed)
+      User -- (View Feed)
+      User -- (Update Feed)
+      User -- (Delete Feed)
+      User -- (List Feeds)
+      (View Feed) ..> (Obtain Specific Feed) : <<include>>
+      (Update Feed) ..> (Obtain Specific Feed) : <<include>>
+      (Delete Feed) ..> (Obtain Specific Feed) : <<include>>
+    }
+
+  }
+
+@enduml
