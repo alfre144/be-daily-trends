@@ -1,0 +1,36 @@
+{
+  "name": "be-daily-trends",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/alfre144/be-daily-trends#readme",
+  "bugs": {
+    "url": "https://github.com/alfre144/be-daily-trends/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfre144/be-daily-trends.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'npx ts-node' src/index.ts",
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.17",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "ts-jest": "^29.3.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
