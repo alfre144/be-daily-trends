@@ -1,4 +1,4 @@
-import { IFeedRepository } from '../../domain/repositories/IFeedRepository';
+import { IFeedRepository } from '../../domain/repositories/feed-repository.interface';
 import { FeedModel } from '../mongodb/models/FeedModel';
 import { Feed, FeedProps } from '../../domain/entities/Feed';
 
