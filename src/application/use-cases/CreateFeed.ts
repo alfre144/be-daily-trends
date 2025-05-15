@@ -2,7 +2,7 @@ import { IFeedRepository } from "../../domain/repositories/FeedRepository";
 import { FeedProps } from "../../domain/entities/Feed";
 import { CreateFeedDto } from "../dtos/CreateFeed.dto";
 import { validateDTO } from "../../utils/validate-dto";
-import { UnexpectedError } from "../../utils/errors/unexpected-error";
+import { UnexpectedError } from "../../utils/errors/custom-errors";
 
 export class CreateFeedUseCase {
     

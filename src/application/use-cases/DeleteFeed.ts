@@ -1,6 +1,6 @@
 import { IFeedRepository } from "../../domain/repositories/FeedRepository";
 import { NotFoundError } from "../../utils/errors/custom-errors";
-import { UnexpectedError } from "../../utils/errors/unexpected-error";
+import { UnexpectedError } from "../../utils/errors/custom-errors";
 
 export class DeleteFeedUseCase {
     

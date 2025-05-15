@@ -1,5 +1,5 @@
 import { IFeedRepository } from "../../domain/repositories/FeedRepository";
-import { UnexpectedError } from "../../utils/errors/unexpected-error";
+import { UnexpectedError } from "../../utils/errors/custom-errors";
 
 export class GetFeedByIdUseCase {
     

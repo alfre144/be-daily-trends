@@ -2,8 +2,7 @@ import { IFeedRepository } from "../../domain/repositories/FeedRepository";
 import { FeedProps } from "../../domain/entities/Feed";
 import { UpdateFeedDto } from "../dtos/UpdateFeed.dto";
 import { validateDTO } from "../../utils/validate-dto";
-import { NotFoundError } from "../../utils/errors/custom-errors";
-import { UnexpectedError } from "../../utils/errors/unexpected-error";
+import { NotFoundError, UnexpectedError } from "../../utils/errors/custom-errors";
 
 export class UpdateFeedUseCase {
     

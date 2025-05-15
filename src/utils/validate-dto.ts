@@ -1,7 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { ValidationError } from './errors/validation-error';
-import { UnexpectedError } from './errors/unexpected-error';
+import { ValidationError, UnexpectedError } from './errors/custom-errors';
 
 
 export const validateDTO = async <T extends object>(dtoClass: new () => T, plainObject: object): Promise<T> => {

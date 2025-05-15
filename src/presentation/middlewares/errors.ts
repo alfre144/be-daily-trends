@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import { ValidationError } from '../../utils/errors/validation-error';
 import { CustomError } from '../../utils/errors/custom-errors';
 
 export const errorMiddleware: ErrorRequestHandler = (
@@ -9,15 +8,6 @@ export const errorMiddleware: ErrorRequestHandler = (
     next: NextFunction
 ): void => {
     
-    if (err instanceof ValidationError) {
-        res.status(err.statusCode).json({
-            statusCode: err.statusCode,
-            message: err.message,
-            errors: err.errors,
-        });
-        return;
-    }
-
     if (err instanceof CustomError) {
         res.status(err.statusCode).json({
             statusCode: err.statusCode,
