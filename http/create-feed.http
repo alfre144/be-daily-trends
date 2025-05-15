@@ -1,0 +1,11 @@
+# Create Feed > Succesfully
+POST http://localhost:3000/api/feeds
+Content-Type: application/json
+
+{
+    "source": "Diario AB",
+    "url": "https://ablasco.dev/news",
+    "title": "Title of the Article",
+    "content": "Content of the article. This is a sample content.",
+    "author": "Alfredo Blasco"
+}

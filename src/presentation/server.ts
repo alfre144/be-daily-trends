@@ -1,10 +1,6 @@
 import feedRoutes from './routes/Feed.routes';
-import express, {
-    Application,
-    Request,
-    Response,
-    NextFunction,
-} from 'express';
+import { errorMiddleware } from './middlewares/errors';
+import express, { Application } from 'express';
 
 export class ExpressServer {
     
@@ -15,7 +11,7 @@ export class ExpressServer {
     constructor(port: number) {
         this.app = express();
         this.port = port;
-        this.app.use(express.json());
+        this.setupMiddlewares();
         this.setupRoutes();
         this.setupErrorHandling();
     }
@@ -30,14 +26,12 @@ export class ExpressServer {
         this.app.use(this.feedsBasePath, feedRoutes); 
     }
 
+    private setupMiddlewares(): void {
+        this.app.use(express.json());
+    }
+
     private setupErrorHandling(): void {
-        this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-            console.error(err.stack);
-            res.status(500).json({
-                message: 'Internal Server Error',
-                error: err.message,
-            });
-        });
+        this.app.use(errorMiddleware);
     }
 
 }
