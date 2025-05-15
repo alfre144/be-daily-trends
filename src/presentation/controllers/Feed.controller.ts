@@ -5,6 +5,7 @@ import { CreateFeedUseCase } from '../../application/use-cases/CreateFeed';
 import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
 import { GetFeedByIdUseCase } from '../../application/use-cases/GetFeedById';
+import { DeleteFeedUseCase } from '../../application/use-cases/DeleteFeed';
 
 class FeedController {
 
@@ -13,6 +14,7 @@ class FeedController {
         private readonly updateFeedUseCase: UpdateFeedUseCase,
         private readonly listFeedsUseCase: ListFeedsUseCase,
         private readonly getFeedByIdUseCase: GetFeedByIdUseCase,
+        private readonly deleteFeedUseCase: DeleteFeedUseCase,
     ) {}
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -40,7 +42,7 @@ class FeedController {
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const feeds = await this.listFeedsUseCase.execute();
-            const response = ResponseService.success("Feeds retrieved successfully", feeds);
+            const response = ResponseService.success('Feeds retrieved successfully', feeds);
             res.status(200).json(response);
         } catch (error) {
             next(error)
@@ -52,7 +54,7 @@ class FeedController {
             const feedId = req.params.id;
             const feedData = req.body;
             const updatedFeed = await this.updateFeedUseCase.execute(feedId, feedData);
-            const response = ResponseService.success("Feed updated successfully", updatedFeed);
+            const response = ResponseService.success('Feed updated successfully', updatedFeed);
             res.status(200).json(response);
         } catch (error) {
             next(error);
@@ -60,8 +62,14 @@ class FeedController {
 
     }
 
-    static async delete(req: Request, res: Response): Promise<void> {
-        // TODO:
+    async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feedId = req.params.id;
+            await this.deleteFeedUseCase.execute(feedId);
+            res.status(204).json();
+        } catch (error) {
+            next(error);
+        }
     }
     
 }
