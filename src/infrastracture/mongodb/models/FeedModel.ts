@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface FeedDocument extends Document {
-    source: string; // TODO: enum > ElPais, ElMundo, Manual
+    source: string;
     url: string;
     title: string;
     content: string;
@@ -18,6 +18,13 @@ const FeedSchema: Schema = new Schema(
     },
     {
         timestamps: true,
+        toJSON: {
+            transform: (_, ret) => {
+                ret.id = ret._id.toString();
+                delete ret._id;
+                delete ret.__v;
+            },
+        },
     }
 );
 

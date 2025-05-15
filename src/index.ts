@@ -9,7 +9,6 @@ const main = async () => {
     try {
         await connectToMongoDB();
         await server.start();
-        console.log('Server is up and running');
     } catch (error) {
         console.error('Error starting server:', error);
     }

@@ -4,7 +4,7 @@ export const connectToMongoDB = async (): Promise<void> => {
 
     const mongodbURI = process.env.MONGODB_URI;
     
-    if (!mongodbURI) {
+    if(!mongodbURI) {
         console.error('MONGODB_URI is not defined.');
         process.exit(1);
     }
