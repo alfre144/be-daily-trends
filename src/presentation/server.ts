@@ -1,3 +1,4 @@
+import feedRoutes from './routes/Feed.routes';
 import express, {
     Application,
     Request,
@@ -9,6 +10,7 @@ export class ExpressServer {
     
     private app: Application;
     private port: number;
+    private feedsBasePath: string = '/api/feeds';
 
     constructor(port: number) {
         this.app = express();
@@ -25,9 +27,7 @@ export class ExpressServer {
     }
 
     private setupRoutes(): void {
-        this.app.get('/', (req: Request, res: Response) => {
-            res.send('Base route response'); 
-        });
+        this.app.use(this.feedsBasePath, feedRoutes); 
     }
 
     private setupErrorHandling(): void {
