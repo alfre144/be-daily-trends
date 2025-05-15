@@ -2,6 +2,7 @@ import { IFeedRepository } from "../../domain/repositories/FeedRepository";
 import { FeedProps } from "../../domain/entities/Feed";
 import { CreateFeedDto } from "../dtos/CreateFeed.dto";
 import { validateDTO } from "../../utils/validate-dto";
+import { UnexpectedError } from "../../utils/errors/unexpected-error";
 
 export class CreateFeedUseCase {
     
@@ -12,9 +13,9 @@ export class CreateFeedUseCase {
             const validatedFeed = await this.validateFeed(feed);
             return await this.feedRepository.create(validatedFeed);
         } catch (error) {
-            if(error instanceof Error)
-                throw error;
-            throw new Error("An unexpected error occurred while creating the feed.");
+            throw error instanceof Error 
+                ? error 
+                : new UnexpectedError('Unexpected error while creating the feed.');
         } 
     }
 

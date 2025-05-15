@@ -1,0 +1,7 @@
+PUT http://localhost:3000/api/feeds/6826213ce2a0bb5ebcc96281
+Content-Type: application/json
+
+{
+  "title": "New title",
+  "content": "New content"
+}

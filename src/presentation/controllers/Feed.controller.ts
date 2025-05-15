@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateFeedUseCase } from '../../application/use-cases/CreateFeed';
 import { ResponseService } from "../../utils/response-service";
+
+import { CreateFeedUseCase } from '../../application/use-cases/CreateFeed';
+import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 
 class FeedController {
 
     constructor(
-        private readonly createFeedUseCase: CreateFeedUseCase
+        private readonly createFeedUseCase: CreateFeedUseCase,
+        private readonly updateFeedUseCase: UpdateFeedUseCase
     ) {}
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -27,8 +30,17 @@ class FeedController {
         // TODO:
     }
 
-    static async update(req: Request, res: Response): Promise<void> {
-        // TODO:
+    async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feedId = req.params.id;
+            const feedData = req.body;
+            const updatedFeed = await this.updateFeedUseCase.execute(feedId, feedData);
+            const response = ResponseService.success("Feed updated successfully", updatedFeed);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+
     }
 
     static async delete(req: Request, res: Response): Promise<void> {

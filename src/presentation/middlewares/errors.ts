@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import { ValidationError } from '../../utils/validation-error';
+import { ValidationError } from '../../utils/errors/validation-error';
+import { CustomError } from '../../utils/errors/custom-errors';
 
 export const errorMiddleware: ErrorRequestHandler = (
     err: Error,
@@ -13,6 +14,15 @@ export const errorMiddleware: ErrorRequestHandler = (
             statusCode: err.statusCode,
             message: err.message,
             errors: err.errors,
+        });
+        return;
+    }
+
+    if (err instanceof CustomError) {
+        res.status(err.statusCode).json({
+            statusCode: err.statusCode,
+            message: err.message,
+            error: err.name,
         });
         return;
     }
