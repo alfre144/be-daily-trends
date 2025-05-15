@@ -41,6 +41,8 @@ export class FeedRepositoryImpl implements IFeedRepository {
                 throw new NotFoundError(`Feed with ID '${id}' not found`);
             return feed.toJSON() as FeedProps;
         } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
             throw new DatabaseError(
                 `Error finding feed by ID: ${error instanceof Error 
                     ? error.message 
@@ -51,7 +53,7 @@ export class FeedRepositoryImpl implements IFeedRepository {
 
     async findAll(): Promise<FeedProps[]> {
         try {
-            const feeds = await FeedModel.find().lean();
+            const feeds = await FeedModel.find();
             return feeds as FeedProps[];
         } catch (error) {
             throw new DatabaseError(
@@ -71,6 +73,8 @@ export class FeedRepositoryImpl implements IFeedRepository {
                 throw new NotFoundError(`Feed with ID '${id}' not found for update`);
             return updatedFeed.toJSON() as FeedProps;
         } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
             throw new DatabaseError(
                 `Error updating feed: ${error instanceof Error 
                     ? error.message 
@@ -88,6 +92,8 @@ export class FeedRepositoryImpl implements IFeedRepository {
             if(!result)
                 throw new NotFoundError(`Feed with ID '${id}' not found for deletion`);
         } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
             throw new DatabaseError(
                 `Error deleting feed: ${error instanceof Error 
                     ? error.message 

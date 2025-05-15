@@ -3,12 +3,16 @@ import { ResponseService } from "../../utils/response-service";
 
 import { CreateFeedUseCase } from '../../application/use-cases/CreateFeed';
 import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
+import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
+import { GetFeedByIdUseCase } from '../../application/use-cases/GetFeedById';
 
 class FeedController {
 
     constructor(
         private readonly createFeedUseCase: CreateFeedUseCase,
-        private readonly updateFeedUseCase: UpdateFeedUseCase
+        private readonly updateFeedUseCase: UpdateFeedUseCase,
+        private readonly listFeedsUseCase: ListFeedsUseCase,
+        private readonly getFeedByIdUseCase: GetFeedByIdUseCase,
     ) {}
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,12 +26,25 @@ class FeedController {
         }
     }
 
-    static async getById(req: Request, res: Response): Promise<void> {
-        // TODO:
+    async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feedId = req.params.id;
+            const feed = await this.getFeedByIdUseCase.execute(feedId);
+            const response = ResponseService.success('Feed retrieved successfully', feed);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        } 
     }
     
-    static async getAll(req: Request, res: Response): Promise<void> {
-        // TODO:
+    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feeds = await this.listFeedsUseCase.execute();
+            const response = ResponseService.success("Feeds retrieved successfully", feeds);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error)
+        }
     }
 
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
