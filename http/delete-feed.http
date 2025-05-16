@@ -1,0 +1,2 @@
+DELETE http://localhost:3000/api/feeds/6825f84d4130bf812bf0c7ca
+Content-Type: application/json

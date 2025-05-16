@@ -1,6 +1,7 @@
 import { IFeedRepository } from '../../domain/repositories/FeedRepository';
 import { FeedModel } from '../mongodb/models/FeedModel';
 import { FeedProps } from '../../domain/entities/Feed';
+import { DatabaseError, InvalidIdError, NotFoundError } from '../../utils/errors/custom-errors';
 import mongoose from 'mongoose';
 
 export class FeedRepositoryImpl implements IFeedRepository {
@@ -10,9 +11,11 @@ export class FeedRepositoryImpl implements IFeedRepository {
             const createdFeed = await FeedModel.create(feed);
             return createdFeed.toJSON() as FeedProps;
         } catch (error) {
-            if(error instanceof Error)
-                throw new Error(`Error creating feed: ${error.message}`);
-            throw new Error('Error creating feed: Unknown error');
+            throw new DatabaseError(
+                `Error creating feed: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
         }
     }
 
@@ -21,35 +24,82 @@ export class FeedRepositoryImpl implements IFeedRepository {
             const createdFeeds = await FeedModel.insertMany(feeds);
             return createdFeeds.map(feed => feed.toJSON() as FeedProps);
         } catch (error) {
-            if(error instanceof Error)
-                throw new Error(`Error creating feeds: ${error.message}`);
-            throw new Error('Error creating feeds: Unknown error');
+            throw new DatabaseError(
+                `Error creating feeds: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
         }
     }
 
-    async findById(id: string): Promise<FeedProps | null> {
+    async findById(id: string): Promise<FeedProps> {
         if(!mongoose.isValidObjectId(id)) 
-            throw new Error('Invalid ID format');
-        const feed = await FeedModel.findById(id).lean();
-        return feed ? (feed as FeedProps) : null;
+            throw new InvalidIdError();
+        try {
+            const feed = await FeedModel.findById(id);
+            if (!feed)
+                throw new NotFoundError(`Feed with ID '${id}' not found`);
+            return feed.toJSON() as FeedProps;
+        } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
+            throw new DatabaseError(
+                `Error finding feed by ID: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
+        }
     }
 
     async findAll(): Promise<FeedProps[]> {
-        const feeds = await FeedModel.find().lean();
-        return feeds as FeedProps[];
+        try {
+            const feeds = await FeedModel.find();
+            return feeds as FeedProps[];
+        } catch (error) {
+            throw new DatabaseError(
+                `Error finding all feeds: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
+        }  
     }
 
-    async update(id: string, feed: Partial<FeedProps>): Promise<FeedProps | null> {
+    async update(id: string, feed: Partial<FeedProps>): Promise<FeedProps> {
         if(!mongoose.isValidObjectId(id)) 
-            throw new Error('Invalid ID format');
-        const updatedFeed = await FeedModel.findByIdAndUpdate(id, feed, { new: true, lean: true });
-        return updatedFeed ? (updatedFeed as FeedProps) : null;
+            throw new InvalidIdError();
+        try {
+            const updatedFeed = await FeedModel.findByIdAndUpdate(id, feed, { new: true });
+            if (!updatedFeed)
+                throw new NotFoundError(`Feed with ID '${id}' not found for update`);
+            return updatedFeed.toJSON() as FeedProps;
+        } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
+            throw new DatabaseError(
+                `Error updating feed: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
+        }
+
     }
 
     async delete(id: string): Promise<void> {
         if(!mongoose.isValidObjectId(id)) 
-            throw new Error('Invalid ID format');
-        await FeedModel.findByIdAndDelete(id);
+            throw new InvalidIdError();
+        try {
+            const result = await FeedModel.findByIdAndDelete(id);
+            if(!result)
+                throw new NotFoundError(`Feed with ID '${id}' not found for deletion`);
+        } catch (error) {
+            if (error instanceof NotFoundError || error instanceof InvalidIdError)
+                throw error;
+            throw new DatabaseError(
+                `Error deleting feed: ${error instanceof Error 
+                    ? error.message 
+                    : 'Unknown error'
+            }`);
+        }
     }
 
 }
