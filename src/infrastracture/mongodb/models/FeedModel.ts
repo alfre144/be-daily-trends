@@ -6,6 +6,7 @@ export interface FeedDocument extends Document {
     title: string;
     content: string;
     author: string;
+    weight?: number
 }
 
 const FeedSchema: Schema = new Schema(
@@ -15,6 +16,7 @@ const FeedSchema: Schema = new Schema(
         title: { type: String, required: true },
         content: { type: String, required: true },
         author: { type: String, required: true },
+        weight: { type: Number, default: 0 },
     },
     {
         timestamps: true,

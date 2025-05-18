@@ -24,6 +24,12 @@ export class InvalidIdError extends CustomError {
     }
 }
 
+export class ScraperNotFoundError extends CustomError {
+    constructor(message: string = 'Scraper name doesnt exist') {
+        super(message, 400);
+    }
+}
+
 export class NotFoundError extends CustomError {
     constructor(message: string = 'Resource not found') {
         super(message, 404);
@@ -40,5 +46,11 @@ export class DatabaseError extends CustomError {
 export class UnexpectedError extends CustomError {
     constructor(message: string = 'An unexpected error occurred') {
         super(message, 500);
+    }
+}
+
+export class ScraperError extends CustomError {
+    constructor(message: string = 'Error occurred during scraping', statusCode: number = 500) {
+        super(message, statusCode);
     }
 }

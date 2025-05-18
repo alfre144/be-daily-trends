@@ -6,6 +6,7 @@ import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
 import { GetFeedByIdUseCase } from '../../application/use-cases/GetFeedById';
 import { DeleteFeedUseCase } from '../../application/use-cases/DeleteFeed';
+import { ImportFeeds } from '../../application/use-cases/ImportFeeds';
 
 class FeedController {
 
@@ -15,6 +16,7 @@ class FeedController {
         private readonly listFeedsUseCase: ListFeedsUseCase,
         private readonly getFeedByIdUseCase: GetFeedByIdUseCase,
         private readonly deleteFeedUseCase: DeleteFeedUseCase,
+        private readonly importFeedsUseCase: ImportFeeds
     ) {}
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,6 +24,16 @@ class FeedController {
         try {
             const feed = await this.createFeedUseCase.execute({ source, url, title, content, author });
             const response = ResponseService.success('Feed created successfully', feed);
+            res.status(201).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async import(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feed = await this.importFeedsUseCase.execute();
+            const response = ResponseService.success('Feeds imported successfully', feed);
             res.status(201).json(response);
         } catch (error) {
             next(error);
