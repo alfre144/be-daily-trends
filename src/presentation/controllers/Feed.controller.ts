@@ -53,7 +53,17 @@ class FeedController {
     
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const feeds = await this.listFeedsUseCase.execute();
+            const { sources, date, limit, page, pageSize, orderBy, orderDirection} = req.query;
+            const filters = {
+                sources: sources ? (sources as string).split(',') : undefined,
+                date: date ? new Date(date as string) : undefined,
+                limit: limit ? parseInt(limit as string, 10) : undefined,
+                page: page ? parseInt(page as string, 10) : undefined,
+                pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+                orderBy: orderBy ? (orderBy as string) : undefined,
+                orderDirection: orderDirection === 'asc' ? 1 : orderDirection === 'desc' ? -1 : undefined,
+            };
+            const feeds = await this.listFeedsUseCase.execute(filters);
             const response = ResponseService.success('Feeds retrieved successfully', feeds);
             res.status(200).json(response);
         } catch (error) {
