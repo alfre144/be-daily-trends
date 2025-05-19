@@ -1,8 +1,8 @@
-import { IFeedRepository } from '../../domain/repositories/FeedRepository';
+import { IFeedRepository, FindAllParams } from '../../domain/repositories/FeedRepository';
 import { FeedModel } from '../mongodb/models/FeedModel';
 import { FeedProps } from '../../domain/entities/Feed';
 import { DatabaseError, InvalidIdError, NotFoundError } from '../../utils/errors/custom-errors';
-import mongoose from 'mongoose';
+import mongoose, { SortOrder } from 'mongoose';
 
 export class FeedRepositoryImpl implements IFeedRepository {
 
@@ -51,9 +51,33 @@ export class FeedRepositoryImpl implements IFeedRepository {
         }
     }
 
-    async findAll(): Promise<FeedProps[]> {
+    async findAll(filters?: FindAllParams): Promise<FeedProps[]> {
         try {
-            const feeds = await FeedModel.find();
+            const query: any = {};
+            if (filters?.sources)
+                query.sources   = { $in: filters.sources };
+            if (filters?.date) {
+                const { startDate, endDate } = this.getStartAndEndOfDay(filters.date);
+                query.createdAt = { $gte: startDate, $lte: endDate };
+            }
+            // Pagination
+            const page = filters?.page || 1;
+            const pageSize = filters?.pageSize || 15;
+            // Ordering
+            const allowedOrderByFields = ['createdAt', 'weight'];
+            const orderByField = allowedOrderByFields.includes(filters?.orderBy as string)
+            ? (filters?.orderBy as string)
+            : 'createdAt';
+            const orderDirection = filters?.orderDirection ?? -1;
+            const sortOrderProps: Record<string, SortOrder> = {
+                [orderByField]: orderDirection as SortOrder
+            };
+            
+            const feeds = await FeedModel.find(query)
+                .sort(sortOrderProps)
+                .skip((page - 1) * pageSize)
+                .limit(pageSize);
+
             return feeds as FeedProps[];
         } catch (error) {
             throw new DatabaseError(
@@ -100,6 +124,20 @@ export class FeedRepositoryImpl implements IFeedRepository {
                     : 'Unknown error'
             }`);
         }
+    }
+
+    private getStartAndEndOfDay(date: Date): { startDate: Date; endDate: Date } {
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999);
+        return { startDate, endDate };
+    }
+
+    private validateOrderBy(orderBy: string | undefined, allowedFields: string[], defaultField: string): string {
+        if (orderBy && allowedFields.includes(orderBy))
+            return orderBy;
+        return defaultField;
     }
 
 }

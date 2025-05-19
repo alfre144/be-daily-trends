@@ -6,6 +6,7 @@ import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
 import { GetFeedByIdUseCase } from '../../application/use-cases/GetFeedById';
 import { DeleteFeedUseCase } from '../../application/use-cases/DeleteFeed';
+import { ImportFeeds } from '../../application/use-cases/ImportFeeds';
 
 class FeedController {
 
@@ -15,6 +16,7 @@ class FeedController {
         private readonly listFeedsUseCase: ListFeedsUseCase,
         private readonly getFeedByIdUseCase: GetFeedByIdUseCase,
         private readonly deleteFeedUseCase: DeleteFeedUseCase,
+        private readonly importFeedsUseCase: ImportFeeds
     ) {}
 
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,6 +24,16 @@ class FeedController {
         try {
             const feed = await this.createFeedUseCase.execute({ source, url, title, content, author });
             const response = ResponseService.success('Feed created successfully', feed);
+            res.status(201).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async import(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const feed = await this.importFeedsUseCase.execute();
+            const response = ResponseService.success('Feeds imported successfully', feed);
             res.status(201).json(response);
         } catch (error) {
             next(error);
@@ -41,7 +53,17 @@ class FeedController {
     
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const feeds = await this.listFeedsUseCase.execute();
+            const { sources, date, limit, page, pageSize, orderBy, orderDirection} = req.query;
+            const filters = {
+                sources: sources ? (sources as string).split(',') : undefined,
+                date: date ? new Date(date as string) : undefined,
+                limit: limit ? parseInt(limit as string, 10) : undefined,
+                page: page ? parseInt(page as string, 10) : undefined,
+                pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
+                orderBy: orderBy ? (orderBy as string) : undefined,
+                orderDirection: orderDirection === 'asc' ? 1 : orderDirection === 'desc' ? -1 : undefined,
+            };
+            const feeds = await this.listFeedsUseCase.execute(filters);
             const response = ResponseService.success('Feeds retrieved successfully', feeds);
             res.status(200).json(response);
         } catch (error) {

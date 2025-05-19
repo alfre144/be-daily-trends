@@ -8,6 +8,7 @@ import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
 import { GetFeedByIdUseCase } from '../../application/use-cases/GetFeedById';
 import { DeleteFeedUseCase } from '../../application/use-cases/DeleteFeed';
+import { ImportFeeds } from '../../application/use-cases/ImportFeeds';
 
 // Feed Repository Implementation
 const feedRepository = new FeedRepositoryImpl();
@@ -17,6 +18,7 @@ const updateFeedUseCase = new UpdateFeedUseCase(feedRepository);
 const listFeedsUseCase = new ListFeedsUseCase(feedRepository);
 const getFeedByIdUseCase = new GetFeedByIdUseCase(feedRepository);
 const deleteFeedUseCase = new DeleteFeedUseCase(feedRepository);
+const importFeedsUseCase = new ImportFeeds(feedRepository);
 
 const feedController = new FeedController(
     createFeedUseCase, 
@@ -24,6 +26,7 @@ const feedController = new FeedController(
     listFeedsUseCase,
     getFeedByIdUseCase,
     deleteFeedUseCase,
+    importFeedsUseCase
 );
 
 const router = Router();
@@ -37,5 +40,7 @@ router.get('/', asyncWrapper(feedController.getAll.bind(feedController)));
 router.put('/:id', asyncWrapper(feedController.update.bind(feedController)));
 
 router.delete('/:id', asyncWrapper(feedController.delete.bind(feedController)));
+
+router.post('/import', asyncWrapper(feedController.import.bind(feedController)));
 
 export default router;

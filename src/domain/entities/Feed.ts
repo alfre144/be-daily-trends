@@ -7,6 +7,7 @@ export interface FeedProps {
     title: string;
     content: string;
     author: string;
+    weight?: number;
 }
 
 export class Feed {
@@ -19,6 +20,7 @@ export class Feed {
     public title: string;
     public content: string;
     public author: string;
+    public weight: number;
 
     private constructor(props: FeedProps) {
         this.id = props.id || Feed.generateId();
@@ -27,6 +29,7 @@ export class Feed {
         this.title = props.title;
         this.content = props.content;
         this.author = props.author;
+        this.weight = props.weight || 0;
     }
 
     private static generateId(): string {
@@ -43,6 +46,7 @@ export class Feed {
             title: props.title!,
             content: props.content!,
             author: props.author!,
+            weight: props.weight,
         });
     }
 
@@ -56,6 +60,7 @@ export class Feed {
             title: this.title,
             content: this.content,
             author: this.author,
+            weight: this.weight,
         };
     }
     
