@@ -19,6 +19,12 @@ class FeedController {
         private readonly importFeedsUseCase: ImportFeeds
     ) {}
 
+    /***
+     * Create a new feed.
+     * @param { Request } req - Request object containing the feed data in the body.
+     * @param { Response } res - Response object to return the created feed.
+     * @param { NextFunction } next - Function to handle errors.
+     */
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { source, url, title, content, author } = req.body;
         try {
@@ -30,7 +36,12 @@ class FeedController {
         }
     }
 
-    async import(req: Request, res: Response, next: NextFunction): Promise<void> {
+    /***
+     * Import feeds from an external source.
+     * @param { Response } res - Response object to return the imported feeds.
+     * @param { NextFunction } next - Function to handle errors.
+     */
+    async import(res: Response, next: NextFunction): Promise<void> {
         try {
             const feed = await this.importFeedsUseCase.execute();
             const response = ResponseService.success('Feeds imported successfully', feed);
@@ -40,6 +51,12 @@ class FeedController {
         }
     }
 
+    /***
+     * Get a feed by ID.
+     * @param { Request } req - Request object containing the feed ID in the parameters.
+     * @param { Response } res - Response object to return the requested feed.
+     * @param { NextFunction } next - Function to handle errors.
+     */
     async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const feedId = req.params.id;
@@ -51,6 +68,12 @@ class FeedController {
         } 
     }
     
+    /***
+     * Get all feeds with optional filters.
+     * @param { Request } req - Request object containing query parameters for filtering.
+     * @param { Response } res - Response object to return the filtered feeds.
+     * @param { NextFunction } next - Function to handle errors.
+     */
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { sources, date, limit, page, pageSize, orderBy, orderDirection} = req.query;
@@ -71,6 +94,12 @@ class FeedController {
         }
     }
 
+    /***
+     * Update a feed by ID.
+     * @param { Request } req - Request object containging the feed ID in the parameters and data in the body.
+     * @param { Response } res - Response object to confirm the update feed.
+     * @param { NextFunction } next - Function to handle errors.
+     */
     async update(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const feedId = req.params.id;
@@ -83,7 +112,12 @@ class FeedController {
         }
 
     }
-
+    /***
+     * Delete feed by ID.
+     * @param { Request } req - Request object containing the feed ID in the parameters.
+     * @param { Response } res - Response object to confirm the deletion.
+     * @param { NextFunction } next - Function to handle errors.
+     */
     async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const feedId = req.params.id;
