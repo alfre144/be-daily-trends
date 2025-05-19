@@ -23,6 +23,7 @@ export class ExpressServer {
     }
 
     private setupRoutes(): void {
+        console.log(`Registering routes at ${this.feedsBasePath}`);
         this.app.use(this.feedsBasePath, feedRoutes); 
     }
 

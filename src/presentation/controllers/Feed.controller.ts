@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { ResponseService } from "../../utils/response-service";
-
 import { CreateFeedUseCase } from '../../application/use-cases/CreateFeed';
 import { UpdateFeedUseCase } from '../../application/use-cases/UpdateFeed';
 import { ListFeedsUseCase } from '../../application/use-cases/ListFeeds';
@@ -38,10 +37,11 @@ class FeedController {
 
     /***
      * Import feeds from an external source.
+     * @param { Request } req - Request object (not used in this method).
      * @param { Response } res - Response object to return the imported feeds.
      * @param { NextFunction } next - Function to handle errors.
      */
-    async import(res: Response, next: NextFunction): Promise<void> {
+    async import(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const feed = await this.importFeedsUseCase.execute();
             const response = ResponseService.success('Feeds imported successfully', feed);
