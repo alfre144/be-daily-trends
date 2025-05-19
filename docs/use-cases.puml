@@ -3,16 +3,8 @@
   left to right direction
 
   actor User
-  actor Admin
 
   rectangle "DailyTrends" {
-    
-    Admin -- (Scrape News Headlines)
-    note right of (Scrape News Headlines)
-      Extracts headlines (5) from
-      "El País" and "El Mundo"
-      and saves them.
-    end note
     
     User -- (View Daily Feeds)
     note right of (View Daily Feeds)
@@ -23,6 +15,7 @@
     
     package "Feed Management (CRUD)" {
       User -- (Create Manual Feed)
+      User -- (Create Multiple Feeds)
       User -- (View Feed)
       User -- (Update Feed)
       User -- (Delete Feed)

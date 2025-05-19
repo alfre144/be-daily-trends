@@ -3,7 +3,6 @@
   left to right direction
 
   actor User
-  actor Admin
 
   rectangle "DailyTrends ENV" {
     component "API DailyTrends" as API
@@ -16,9 +15,8 @@
   }
   
   User --> API : HTTP Requests
-  Admin --> Scraper : Trigger execution (CLI)
   API <--> DB : CRUD Ops (Feeds)
-  Scraper --> DB : Create Feeds 
+  API <--> Scraper : HTTP Requests
   Scraper --> ElPaisWS : Extract News (HTTP GET)
   Scraper --> ElMundoWS : Extract News (HTTP GET)
 
