@@ -1,0 +1,120 @@
+@startuml CleanArchitecture
+
+  top to bottom direction
+  skinparam packageStyle rectangle
+  skinparam componentStyle rectangle
+  skinparam defaultTextAlignment center
+  hide empty members
+  
+  rectangle "Domain" {
+    package "Entities" {
+       class Feed {
+        + id: string
+        + createdAt: Date?
+        + updatedAt: Date?
+        + source: string
+        + url: string
+        + title: string
+        + content: string
+        + author: string
+        + weight: number
+      }
+    }
+  
+    package "Interfaces" {
+      interface IFeedScraper {
+        scrape(): Promise<FeedProps[]>
+      }
+    }
+  
+    package "Repositories" {
+      interface IFeedRepository {
+        findById(id: string): Promise<FeedProps | null>;
+        findAll(params: FindAllParams): Promise<FeedProps[]>;
+        create(feed: FeedProps): Promise<FeedProps>;
+        createMany(feeds: FeedProps[]): Promise<FeedProps[]>;
+        update(id: string, feed: Partial<FeedProps>): Promise<FeedProps | null>;
+        delete(id: string): Promise<void>;
+      }
+    }
+  }
+  
+  rectangle "Application" {
+    package "UseCases" {
+      class CreateFeed {
+        + execute(dto: CreateFeedDto): Feed
+        - validateFeed(dto: CreateFeedDto)
+      }
+      class UpdateFeed {
+        + execute(dto: CreateFeedDto): Feed
+        - validateFeed(dto: CreateFeedDto)
+      }
+      class DeleteFeed {
+        + execute(id: string)
+      }
+      class ListFeeds {
+        + execute()
+      }
+      class GetFeedById {
+        + execute(id: string)
+      }
+      class ImportFeeds {
+        + execute()
+      }
+    }
+  
+    package "DTOs" {
+      class CreateFeedDto
+      class UpdateFeedDto
+    }
+  }
+  
+  rectangle "Presentation" {
+  
+    package "API" {
+      class FeedController
+      class FeedRoutes
+    }
+  
+    package "Middleware" {
+      class Errors
+    }
+  
+    package "Utilities" {
+      package "Error & Response" {
+        class ResponseService
+        class CustomErrors
+      }
+      package "Execution Utilities" {
+        class AsyncWrapper
+        class ValidateDto
+      }
+    }
+  }
+  
+  rectangle "Infrastracture" {
+    
+    package "Scrapers" {
+      class BaseScraper
+      class ElPaisScraper
+      class ElMundoScraper
+      class ScraperFactory
+    
+      BaseScraper <|-- ElPaisScraper
+      BaseScraper <|-- ElMundoScraper
+  
+      ScraperFactory --> BaseScraper
+    }
+  
+    package "Database" {
+      class MongoConnection
+      class FeedModel
+    }
+  
+  }
+  
+  "Infrastracture" --> "Presentation"
+  "Presentation" --> "Application"
+  "Application" --> "Domain"
+
+@enduml
