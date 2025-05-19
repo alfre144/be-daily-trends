@@ -12,7 +12,7 @@ export class UpdateFeedDto {
     content?: string;
 
     @IsOptional()
-    @IsUrl()
+    @IsUrl({}, { message: 'URL must be a valid URL.' })
     url?: string;
 
     @IsOptional()
