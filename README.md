@@ -29,3 +29,43 @@ The project follows a Clean Architecture with the following layers:
 - `MAX_NEWS`: The maximum number of news articles to process or display. Default value: `5`.
 - `SCRAPERS`: A comma-separated list of scrapers to use. Example: `elpais,elmundo`.
 
+## Steps to run
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Set Environment Variables**:
+   Create a `.env` file in the root with:
+   ```env
+   PORT=3000
+   MONGODB_URI=mongodb://...
+   ```
+
+3. **Start the Database** (if using Docker):
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Build the Project**:
+   ```bash
+   npm run build
+   ```
+
+5. **Run the Server**:
+   ```bash
+   npm run start
+   ```
+
+   The server will be available at [http://localhost:3000](http://localhost:3000).
+
+6. **Run in Development Mode**:
+   ```bash
+   npm run dev
+   ```
+
+7. **Run Tests**:
+   ```bash
+   npm run test
+   ```
