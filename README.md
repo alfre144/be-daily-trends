@@ -17,13 +17,15 @@ The project follows a Clean Architecture with the following layers:
 - Node.js: v22.11.0
 - npm: v11.2.0
 - Typescript: v5.8.3
-- MongoDB: TBD
+- MongoDB: v8.0.9
 
 ## Env config 
 
-** TBD ** 
-
-## Scripts 
-
-** TBD ** 
+- `MONGODB_URI`: Connection string for your MongoDB database. Example format:
+  ```
+    mongodb://<username>:<password>@<host>:<port>/<database>?authSource=admin
+  ```
+  Replace `<username>`, `<password>`, `<host>`, `<port>`, and `<database>` with your actual MongoDB credentials and details.
+- `MAX_NEWS`: The maximum number of news articles to process or display. Default value: `5`.
+- `SCRAPERS`: A comma-separated list of scrapers to use. Example: `elpais,elmundo`.
 
